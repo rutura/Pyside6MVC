@@ -30,10 +30,6 @@ class Widget(QWidget):
         google_ghana= self.add_child_organization(google_root, "Google Ghana", "Google Ghana Branch")
         self.add_child_organization(google_ghana, "Akra", "AI")
 
-
-
-
-    
     def add_root_organization(self, company, purpose):
         item = QTreeWidgetItem(self.ui.treeWidget)
         item.setText(0,company)
