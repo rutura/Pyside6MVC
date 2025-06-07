@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QWidget, QTableWidgetItem 
 from ui_widget import Ui_Widget
+from stareditor import StarEditor
 
 
 class Widget(QWidget): 
@@ -39,4 +40,8 @@ class Widget(QWidget):
 
         # Resize columns to fit content
         self.ui.tableWidget.resizeColumnsToContents()
+
+        editor = StarEditor(self)
+        editor.setStarRating(4)
+        self.ui.verticalLayout.addWidget(editor)
 
