@@ -33,7 +33,7 @@ class Widget(QWidget):
         self.ui.tableWidget.setHorizontalHeaderLabels(["Course Title", "Category", "Rating"])
 
         # Apply delegate to the rating column
-        self.ui.tableWidget.setItemDelegateForColumn(2, self.delegate)
+        self.ui.tableWidget.setItemDelegate(self.delegate)
 
         # Populate table with data
         for row in range(len(self.data)):

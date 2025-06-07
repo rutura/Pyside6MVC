@@ -81,7 +81,6 @@ class StarDelegate(QStyledItemDelegate):
             if isinstance(star_number, str):
                 star_number = int(star_number)
 
-
             painter.save()
 
             # Enable antialiasing for smoother drawing
@@ -94,7 +93,7 @@ class StarDelegate(QStyledItemDelegate):
             painter.scale(0.1, 0.1)
 
             # Draw stars based on rating
-            for i in range(int(self.starRating)):
+            for i in range(int(star_number)):
                 painter.drawPolygon(self.poly)
                 painter.translate(220,0)
 
