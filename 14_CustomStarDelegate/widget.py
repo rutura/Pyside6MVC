@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QWidget, QTableWidgetItem 
 from ui_widget import Ui_Widget
+from stardelegate import StarDelegate
 from stareditor import StarEditor
 
 
@@ -10,6 +11,9 @@ class Widget(QWidget):
         # Connect to the ui form
         self.ui = Ui_Widget()
         self.ui.setupUi(self)
+
+        # Create the delegate
+        self.delegate = StarDelegate(self)
 
         # Initialize data
         self.data = [
@@ -28,6 +32,9 @@ class Widget(QWidget):
         # Set column headers
         self.ui.tableWidget.setHorizontalHeaderLabels(["Course Title", "Category", "Rating"])
 
+        # Apply delegate to the rating column
+        self.ui.tableWidget.setItemDelegateForColumn(2, self.delegate)
+
         # Populate table with data
         for row in range(len(self.data)):
             item0 = QTableWidgetItem(self.data[row][0])
@@ -41,7 +48,7 @@ class Widget(QWidget):
         # Resize columns to fit content
         self.ui.tableWidget.resizeColumnsToContents()
 
-        editor = StarEditor(self)
-        editor.setStarRating(4)
-        self.ui.verticalLayout.addWidget(editor)
+        # editor = StarEditor(self)
+        # editor.setStarRating(4)
+        # self.ui.verticalLayout.addWidget(editor)
 
