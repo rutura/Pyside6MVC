@@ -80,3 +80,9 @@ class PersonDelegate(QStyledItemDelegate):
 
         else:
             return super().paint(painter, option, index)
+        
+    def sizeHint(self, option, index):
+        if index.column() == 1: 
+            return QSize(100,35) # This a recommendation.
+        else:
+            return super().sizeHint(option, index)

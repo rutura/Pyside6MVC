@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QInputDialog, QMessageBox, QLineEdit
+from PySide6.QtWidgets import QWidget, QInputDialog, QMessageBox, QLineEdit, QHeaderView
 from ui_widget import Ui_Widget   
 from personmodel import PersonModel
 from persondelegate import PersonDelegate
@@ -23,6 +23,9 @@ class Widget(QWidget):
         self.ui.listView.setModel(self.model)
         self.ui.tableView.setModel(self.model)
         self.ui.treeView.setModel(self.model)
+
+        # Make views respect row heights from the delegate
+        self.ui.tableView.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
 
         # Set the delegates
