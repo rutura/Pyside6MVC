@@ -6,7 +6,7 @@ class Person:
 
         self._column_fields = data or []
         self._parent = parent 
-        self._children = list[Person] = []
+        self._children : list[Person] = []
 
     def append_child(self, child: 'Person'):
         self._children.append(child)
