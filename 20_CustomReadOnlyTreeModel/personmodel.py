@@ -1,5 +1,6 @@
 import os
 from PySide6.QtCore import QAbstractItemModel, QModelIndex, Qt
+from PySide6.QtCore import QFile, QIODevice, QTextStream
 from person import Person
 
 class PersonModel(QAbstractItemModel):
@@ -9,25 +10,30 @@ class PersonModel(QAbstractItemModel):
         # Initialize the root person
         self.root_person = Person(["John Doe", "CEO"])
 
-        # Create the managers
-        manager1 = Person(["Jane Smith", "Manager"], self.root_person)
-        manager2 = Person(["Bob Johnson", "Manager"], self.root_person)
+        # # Create the managers: in memory
+        # manager1 = Person(["Jane Smith", "Manager"], self.root_person)
+        # manager2 = Person(["Bob Johnson", "Manager"], self.root_person)
 
-        # Add managers to root
-        self.root_person.append_child(manager1)
-        self.root_person.append_child(manager2)
+        # # Add managers to root
+        # self.root_person.append_child(manager1)
+        # self.root_person.append_child(manager2)
 
-        # Add employees under manager1
-        employee1 = Person(["Alice Brown", "Developer"], manager1)
-        employee2 = Person(["Tom Wilson", "Designer"], manager1)
-        manager1.append_child(employee1)
-        manager1.append_child(employee2)
+        # # Add employees under manager1
+        # employee1 = Person(["Alice Brown", "Developer"], manager1)
+        # employee2 = Person(["Tom Wilson", "Designer"], manager1)
+        # manager1.append_child(employee1)
+        # manager1.append_child(employee2)
 
-        # Add employees under manager2
-        employee3 = Person(["Charlie Davis", "Developer"], manager2)
-        employee4 = Person(["Eve Anderson", "Tester"], manager2)
-        manager2.append_child(employee3)
-        manager2.append_child(employee4)
+        # # Add employees under manager2
+        # employee3 = Person(["Charlie Davis", "Developer"], manager2)
+        # employee4 = Person(["Eve Anderson", "Tester"], manager2)
+        # manager2.append_child(employee3)
+        # manager2.append_child(employee4)
+
+
+        # Read the data from a file in the data/familytree.txt file starting from the location of the python file
+        self.filename = "data/familytree.txt"
+        self.read_file()
 
 
     def rowCount(self, parent = QModelIndex()):
@@ -92,6 +98,65 @@ class PersonModel(QAbstractItemModel):
         if parent_person == self.root_person:
             return QModelIndex()
         return self.createIndex(parent_person.row(), 0, parent_person)
+    
+
+    def parse_line(self,line):
+        """
+        Parse a line into names and profession
+        
+        :param line: Line from the input file
+        :return: Tuple of (names, profession)
+        """
+        parts = line.split('(')
+        names = parts[0].strip()
+        profession = parts[1].rstrip(')').strip()
+        return names, profession
+    
+
+    def read_file(self):
+
+        last_indentation = 0
+        last_parent = self.root_person
+        last_person = None
+
+        # Use QFile for resource file
+        file = QFile(self.filename)
+        
+        if file.open(QIODevice.ReadOnly | QIODevice.Text):
+            text_stream = QTextStream(file)
+
+            while not text_stream.atEnd():
+                line = text_stream.readLine()
+                current_indentation = line.count('\t')
+                names, profession = self.parse_line(line.strip())
+
+                diff_indent = current_indentation - last_indentation
+
+                if diff_indent == 0:
+                    # Sibling level
+                    person = Person([names,profession], last_parent)
+                    last_parent.append_child(person)
+                    last_person = person
+
+                elif diff_indent > 0:
+                    # Nest a child
+                    last_parent = last_person
+                    person = Person([names,profession], last_parent)
+                    last_parent.append_child(person)
+                    last_person = person
+
+                else:
+                    # Move up the parent chain
+                    iterations = - diff_indent
+                    for _ in range(iterations):
+                        last_parent = last_parent.parent_person()
+
+                    person = Person([names,profession], last_parent)
+                    last_parent.append_child(person)
+                    last_person = person
+
+                last_indentation = current_indentation
+            file.close()
         
 
         
