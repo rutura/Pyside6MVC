@@ -1,18 +1,27 @@
 {
-    "items": [
-        {
-            "description": "Enter product description here...",
-            "imagePath": "C:/Users/Daniel/Downloads/sav_load.png",
-            "lastUpdated": "2025-06-24T10:59:28",
-            "productName": "Mercedez",
-            "quantity": 5,
-            "rating": 5,
-            "supplier": "Bbbr"
-        }
-    ],
-    "suppliers": [
-        "Aaar",
-        "Bbbr",
-        "Cccr"
-    ]
+  "items": [
+    {
+      "productName": "Mercedez",
+      "quantity": 5,
+      "supplier": "Bbbr",
+      "imagePath": "F:\\OnlineCourses\\MvcPyside6\\CodeLive\\PracticeProjects\\Project_03_Inventory\\data\\images\\20250624111444_dads.jpg",
+      "rating": 5,
+      "description": "Imodoka\n",
+      "lastUpdated": "2025-06-24T11:16:18"
+    },
+    {
+      "productName": "Igare",
+      "quantity": 5,
+      "supplier": "Cccr",
+      "imagePath": "C:/Users/Daniel/Downloads/option_b.jpg",
+      "rating": 4,
+      "description": "Igare",
+      "lastUpdated": "2025-06-24T11:16:53"
+    }
+  ],
+  "suppliers": [
+    "Aaar",
+    "Bbbr",
+    "Cccr"
+  ]
 }
