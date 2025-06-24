@@ -1,6 +1,6 @@
-# Inventory Management System with Qt6/C++
+# Inventory Management System with PySide6
 
-This project is a comprehensive desktop application built with Qt6 and C++ that demonstrates the Model-View-Delegate pattern along with practical implementations of data persistence, custom widgets, and modern C++ practices. It serves as an educational resource for understanding Qt's powerful MVC architecture.
+This project is a comprehensive desktop application built with PySide6 (Qt for Python) that demonstrates the Model-View-Delegate pattern along with practical implementations of data persistence, custom widgets, and modern Python practices. It serves as an educational resource for understanding Qt's powerful MVC architecture in a Python context.
 
 ## Architecture Overview
 
@@ -8,15 +8,14 @@ This project is a comprehensive desktop application built with Qt6 and C++ that 
 
 The application implements Qt's Model-View-Delegate pattern with three distinct layers:
 
-1. **Model Layer** (`InventoryModel`):
-   - Inherits from `QAbstractTableModel`
+1. **Model Layer** (`InventoryModel`):   - Inherits from `QAbstractTableModel`
    - Manages data storage and business logic
-   - Implements required virtual functions:
-     ```cpp
-     virtual int rowCount(const QModelIndex &parent) const override;
-     virtual int columnCount(const QModelIndex &parent) const override;
-     virtual QVariant data(const QModelIndex &index, int role) const override;
-     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+   - Implements required methods:
+     ```python
+     def rowCount(self, parent=QModelIndex()):
+     def columnCount(self, parent=QModelIndex()):
+     def data(self, index, role=Qt.DisplayRole):
+     def setData(self, index, value, role=Qt.EditRole):
      ```
    - Handles data persistence through JSON serialization
    - Provides CRUD operations for inventory items
@@ -50,12 +49,13 @@ The application implements Qt's Model-View-Delegate pattern with three distinct 
 
 ## Project Structure
 
-- `main.cpp`: Application entry point
-- `widget.h/cpp`: Main window implementation
-- `inventorymodel.h/cpp`: Data model implementation (MVC pattern)
-- `inventoryitem.h`: Product item data structure
-- `inventorydelegates.h/cpp`: Custom delegates for table view rendering
-- `productdetailswidget.h/cpp`: Detail view implementation
+- `main.py`: Application entry point
+- `widget.py`: Main window implementation
+- `inventorymodel.py`: Data model implementation (MVC pattern)
+- `inventoryitem.py`: Product item data structure
+- `inventorydelegates.py`: Custom delegates for table view rendering
+- `productdetailswidget.py`: Detail view implementation
+- `ui_widget.py`: Auto-generated UI code from Qt Designer
 
 ## Technical Implementation
 
@@ -74,47 +74,45 @@ The application implements Qt's Model-View-Delegate pattern with three distinct 
 
 ### Key Components in Detail
 
-#### 1. Inventory Model (`inventorymodel.h/cpp`)
-```cpp
-class InventoryModel : public QAbstractTableModel {
-    enum Column {
-        ProductName = 0,
-        Quantity,
-        Supplier,
-        ProductImage,
-        Rating,
-        ColumnCount
-    };
-    // ... methods for CRUD operations
-    private:
-        QVector<InventoryItem> items;
-        QStringList supplierList;
-};
+#### 1. Inventory Model (`inventorymodel.py`)
+```python
+class InventoryModel(QAbstractTableModel):
+    # Column enum
+    ProductName = 0
+    Quantity = 1
+    Supplier = 2
+    ProductImage = 3
+    Rating = 4
+    ColumnCount = 5
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.items = []
+        self.supplierList = []
 ```
 - Implements table model interface
 - Manages data persistence
 - Handles item validation and unique constraints
 - Provides search and filter capabilities
 
-#### 2. Item Structure (`inventoryitem.h`)
-```cpp
-class InventoryItem {
-public:
-    QString productName;
-    int quantity;
-    QString supplier;
-    QString imagePath;
-    QPixmap image;
-    int rating;
-    QString description;
-    QDateTime lastUpdated;
-};
+#### 2. Item Structure (`inventoryitem.py`)
+```python
+class InventoryItem:
+    def __init__(self):
+        self.productName = ""
+        self.quantity = 0
+        self.supplier = ""
+        self.imagePath = ""
+        self.image = QPixmap()
+        self.rating = 0  # 1-5 stars
+        self.description = ""
+        self.lastUpdated = QDateTime.currentDateTime()
 ```
 - Represents individual inventory items
 - Contains all item properties
 - Used for data transfer and storage
 
-#### 3. Custom Delegates (`inventorydelegates.h/cpp`)
+#### 3. Custom Delegates (`inventorydelegates.py`)
 - **ImageDelegate**: 
   - Displays thumbnails in table
   - Handles image file selection
@@ -122,22 +120,25 @@ public:
 - **RatingDelegate**:
   - Shows interactive star rating
   - Provides click-to-rate functionality
+  - Custom star rendering with antialiasing
 - **SupplierDelegate**:
-  - Implements dropdown selection
+  - Implements dropdown selection with QComboBox
   - Manages supplier list synchronization
 
 #### 4. Data Persistence System
 - JSON-based storage:
-  ```cpp
-  // Saving example (simplified)
-  QJsonObject itemToJson(const InventoryItem &item) {
-      QJsonObject obj;
-      obj["productName"] = item.productName;
-      obj["quantity"] = item.quantity;
-      obj["supplier"] = item.supplier;
-      // ... other properties
-      return obj;
-  }
+  ```python
+  # Saving example (simplified)
+  def saveToFile(self, filename):
+      items_data = []
+      for item in self.items:
+          item_dict = {
+              "productName": item.productName,
+              "quantity": item.quantity,
+              "supplier": item.supplier,
+              # ... other properties
+          }
+          items_data.append(item_dict)
   ```
 - Automatic save/load functionality
 - Image file management
@@ -146,14 +147,19 @@ public:
 ## Building and Running the Project
 
 ### Prerequisites
-- Qt 6.x
-- C++ compiler with C++11 support
-- CMake 3.x
+- Python 3.x
+- PySide6
+- Qt Designer (optional, for UI editing)
 
 ### Build Steps
-1. Open the project in Qt Creator
-2. Configure the project for your Qt kit
-3. Build and run the project
+1. Install the required packages:
+   ```bash
+   pip install PySide6
+   ```
+2. Run the application:
+   ```bash
+   python main.py
+   ```
 
 The application will create necessary data directories on first run.
 
@@ -191,89 +197,104 @@ The application will create necessary data directories on first run.
 ## Implementation Details for Students
 
 ### Signal-Slot Connections
-Example from `widget.cpp`:
-```cpp
-void Widget::setupConnections()
-{
-    // Button connections
-    connect(ui->addButton, &QPushButton::clicked, this, &Widget::onAddItem);
-    connect(ui->editButton, &QPushButton::clicked, this, &Widget::onEditItem);
+Example from `widget.py`:
+```python
+def setupConnections(self):
+    # Button connections
+    self.ui.addButton.clicked.connect(self.onAddItem)
+    self.ui.editButton.clicked.connect(self.onEditItem)
+    self.ui.deleteButton.clicked.connect(self.onDeleteItem)
+    self.ui.manageSuppliersButton.clicked.connect(self.onManageSuppliers)
     
-    // Selection change handling
-    connect(ui->inventoryTableView->selectionModel(), 
-            &QItemSelectionModel::currentRowChanged,
-            this, &Widget::onSelectionChanged);
+    # Search functionality
+    self.ui.searchLineEdit.textChanged.connect(self.onSearchTextChanged)
     
-    // Detail panel updates
-    connect(detailsWidget, &ProductDetailsWidget::imageChanged,
-            this, &Widget::onImageChanged);
-}
+    # Selection change handling
+    selection_model = self.ui.inventoryTableView.selectionModel()
+    selection_model.currentRowChanged.connect(self.onSelectionChanged)
+    
+    # Details panel connections
+    self.detailsWidget.imageChanged.connect(self.onImageChanged)
+    self.detailsWidget.descriptionChanged.connect(self.onDescriptionChanged)
 ```
 
 ### Data Loading Process
-1. Application startup flow:
-   ```cpp
-   Widget::Widget(QWidget *parent)
-   {
-       // Create data directories
-       QDir dataDir(QDir::current());
-       if (!dataDir.exists("data")) {
-           dataDir.mkdir("data");
-       }
-       if (!dataDir.exists("data/images")) {
-           dataDir.mkdir("data/images");
-       }
-       
-       // Setup components
-       setupModel();
-       setupConnections();
-       loadData();
-       setupDelegates();
-   }
+1. Application startup flow (`widget.py`):
+   ```python
+   def __init__(self, parent=None):
+       super().__init__(parent)
+       self.ui = Ui_Widget()
+       self.ui.setupUi(self)
+
+       # Set up data directory
+       dataDir = QDir.current()
+       if not dataDir.exists("data"):
+           dataDir.mkdir("data")
+       if not dataDir.exists("data/images"):
+           dataDir.mkdir("data/images")
+           
+       self.setupModel()
+       self.setupConnections()
+       self.loadData()
+       self.setupDelegates()
    ```
 
-2. JSON handling:
-   ```cpp
-   bool InventoryModel::loadFromFile(const QString &filename)
-   {
-       QFile file(filename);
-       if (!file.open(QIODevice::ReadOnly)) {
-           return false;
-       }
-       
-       QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-       QJsonArray itemsArray = doc.object()["items"].toArray();
-       
-       // Process each item
-       for (const QJsonValue &value : itemsArray) {
-           QJsonObject obj = value.toObject();
-           // Convert JSON to InventoryItem
-           // Add to model
-       }
-   }
+2. JSON handling (`inventorymodel.py`):
+   ```python
+   def loadFromFile(self, filename):
+       try:
+           if not os.path.exists(filename):
+               return False
+
+           with open(filename, 'r', encoding='utf-8') as f:
+               data = json.load(f)
+
+           self.beginResetModel()
+           self.items.clear()
+
+           for item_data in data.get("items", []):
+               item = InventoryItem()
+               item.productName = item_data["productName"]
+               item.quantity = item_data["quantity"]
+               item.supplier = item_data["supplier"]
+               item.imagePath = item_data["imagePath"]
+               if item.imagePath:
+                   item.image = QPixmap(item.imagePath)
+               item.rating = item_data["rating"]
+               item.description = item_data["description"]
+               item.lastUpdated = QDateTime.fromString(
+                   item_data["lastUpdated"], Qt.ISODate
+               )
+               self.items.append(item)
+
+           self.supplierList = data.get("suppliers", [])
+           self.endResetModel()
+           return True
+       except:
+           return False
    ```
 
 ### Key Learning Points
 1. **Model-View-Delegate Pattern**
-   - Separation of concerns
+   - Separation of concerns using PySide6
    - Data management vs. presentation
-   - Custom rendering and editing
+   - Custom delegate implementation in Python
 
-2. **Qt Best Practices**
-   - Signal-slot mechanism for loose coupling
-   - Resource management and cleanup
-   - Event handling patterns
+2. **Qt Best Practices in Python**
+   - Signal-slot mechanism using Python decorators (@Slot)
+   - Pythonic resource management
+   - Event handling with Qt in Python
 
-3. **Modern C++ Features Used**
-   - Smart pointers for memory management
-   - Range-based for loops
-   - Lambda expressions
-   - Auto type deduction
+3. **Modern Python Features Used**
+   - Type annotations and hints
+   - Context managers (with statements)
+   - List comprehensions
+   - Lambda functions
 
 4. **Data Persistence Patterns**
-   - JSON serialization/deserialization
-   - File I/O operations
-   - Error handling and validation
+   - JSON serialization with Python's json module
+   - File handling with context managers
+   - Error handling with try/except
 
 5. **UI Design Patterns**
    - Master-detail views
@@ -281,4 +302,4 @@ void Widget::setupConnections()
    - Dynamic updates
    - Search and filtering
 
-This project serves as a comprehensive example of professional Qt/C++ development practices. Study the implementation details to understand how various components work together in a real-world application.
+This project serves as a comprehensive example of professional Qt development using Python and PySide6. Study the implementation details to understand how various components work together in a real-world Python application.
