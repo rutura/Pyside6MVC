@@ -1,0 +1,18 @@
+{
+    "items": [
+        {
+            "description": "Enter product description here...",
+            "imagePath": "C:/Users/Daniel/Downloads/sav_load.png",
+            "lastUpdated": "2025-06-24T10:59:28",
+            "productName": "Mercedez",
+            "quantity": 5,
+            "rating": 5,
+            "supplier": "Bbbr"
+        }
+    ],
+    "suppliers": [
+        "Aaar",
+        "Bbbr",
+        "Cccr"
+    ]
+}
